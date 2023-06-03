@@ -7,7 +7,7 @@ const MIN_LENGTH: u8 = 6;
 
 #[derive(Debug, Copy, Clone)]
 pub struct PasswordPolicy {
-    min_length: u8,
+    length: u8,
     require_number: bool,
     require_special: bool,
     require_upper: bool,
@@ -17,7 +17,7 @@ pub struct PasswordPolicy {
 impl Default for PasswordPolicy {
     fn default() -> Self {
         Self {
-            min_length: 8,
+            length: 8,
             require_number: true,
             require_special: true,
             require_upper: true,
@@ -31,15 +31,15 @@ impl PasswordPolicy {
         Self::default()
     }
 
-    pub fn set_min_length(self, min_length: u8) -> Self {
-        let value = if min_length < MIN_LENGTH {
+    pub fn set_length(self, length: u8) -> Self {
+        let value = if length < MIN_LENGTH {
             MIN_LENGTH
         } else {
-            min_length
+            length
         };
 
         Self {
-            min_length: value,
+            length: value,
             ..self
         }
     }
@@ -77,7 +77,7 @@ impl PasswordPolicy {
     }
 
     pub fn gen_with_rng<R: Rng + ?Sized>(&self, rng: &mut R) -> String {
-        let mut chars: Vec<char> = (0..self.min_length)
+        let mut chars: Vec<char> = (0..self.length)
             .map(|_| rng.sample(AnyLetter) as char)
             .collect();
 
@@ -115,7 +115,7 @@ mod tests {
     #[test]
     fn it_build_password_policy_with_default_values() {
         let policy = PasswordPolicy::new();
-        assert_eq!(policy.min_length, 8);
+        assert_eq!(policy.length, 8);
         assert!(policy.require_number);
         assert!(policy.require_special);
         assert!(policy.require_upper);
@@ -123,15 +123,15 @@ mod tests {
     }
 
     #[test]
-    fn it_sets_min_length() {
-        let policy = PasswordPolicy::new().set_min_length(16);
-        assert_eq!(policy.min_length, 16);
+    fn it_sets_length() {
+        let policy = PasswordPolicy::new().set_length(16);
+        assert_eq!(policy.length, 16);
     }
 
     #[test]
-    fn it_sets_six_if_min_length_is_smaller_than_six() {
-        let policy = PasswordPolicy::new().set_min_length(5);
-        assert_eq!(policy.min_length, 6);
+    fn it_sets_six_if_length_is_smaller_than_six() {
+        let policy = PasswordPolicy::new().set_length(5);
+        assert_eq!(policy.length, 6);
     }
 
     #[test]
