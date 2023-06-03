@@ -1,5 +1,5 @@
-use rand::Rng;
 use rand::distributions::{Distribution, Uniform};
+use rand::Rng;
 
 pub struct UppercaseLetter;
 pub struct LowercaseLetter;

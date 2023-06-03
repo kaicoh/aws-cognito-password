@@ -1,6 +1,6 @@
 use crate::distributions::*;
-use rand::Rng;
 use rand::seq::SliceRandom;
+use rand::Rng;
 
 // MEMO: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-policies.html
 const MIN_LENGTH: u8 = 6;
@@ -77,7 +77,9 @@ impl PasswordPolicy {
     }
 
     pub fn gen_with_rng<R: Rng + ?Sized>(&self, rng: &mut R) -> String {
-        let mut chars: Vec<char> = (0..self.min_length).map(|_| rng.sample(AnyLetter) as char).collect();
+        let mut chars: Vec<char> = (0..self.min_length)
+            .map(|_| rng.sample(AnyLetter) as char)
+            .collect();
 
         if self.require_upper {
             chars[0] = rng.sample(UppercaseLetter) as char;
@@ -122,43 +124,37 @@ mod tests {
 
     #[test]
     fn it_sets_min_length() {
-        let policy = PasswordPolicy::new()
-            .set_min_length(16);
+        let policy = PasswordPolicy::new().set_min_length(16);
         assert_eq!(policy.min_length, 16);
     }
 
     #[test]
     fn it_sets_six_if_min_length_is_smaller_than_six() {
-        let policy = PasswordPolicy::new()
-            .set_min_length(5);
+        let policy = PasswordPolicy::new().set_min_length(5);
         assert_eq!(policy.min_length, 6);
     }
 
     #[test]
     fn it_sets_require_at_least_1_number_flag() {
-        let policy = PasswordPolicy::new()
-            .contains_at_least_1_number(false);
+        let policy = PasswordPolicy::new().contains_at_least_1_number(false);
         assert!(!policy.require_number);
     }
 
     #[test]
     fn it_sets_require_at_least_1_special_character_flag() {
-        let policy = PasswordPolicy::new()
-            .contains_at_least_1_special_character(false);
+        let policy = PasswordPolicy::new().contains_at_least_1_special_character(false);
         assert!(!policy.require_special);
     }
 
     #[test]
     fn it_sets_require_at_least_1_uppercase_letter_flag() {
-        let policy = PasswordPolicy::new()
-            .contains_at_least_1_uppercase_letter(false);
+        let policy = PasswordPolicy::new().contains_at_least_1_uppercase_letter(false);
         assert!(!policy.require_upper);
     }
 
     #[test]
     fn it_sets_require_at_least_1_lowercase_letter_flag() {
-        let policy = PasswordPolicy::new()
-            .contains_at_least_1_lowercase_letter(false);
+        let policy = PasswordPolicy::new().contains_at_least_1_lowercase_letter(false);
         assert!(!policy.require_lower);
     }
 
