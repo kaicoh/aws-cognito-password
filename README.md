@@ -1,2 +1,3 @@
 # aws-cognito-password
-password generator
+
+A password generator for aws cognito.
