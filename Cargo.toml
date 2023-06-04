@@ -1,7 +1,14 @@
 [package]
 name = "aws-cognito-password"
-version = "0.1.0"
+version = "0.0.1"
+authors = ["kaicoh <sumireminami@gmail.com>"]
 edition = "2021"
+keywords = ["aws", "cognito", "password"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/kaicoh/aws-cognito-password"
+documentation = "https://docs.rs/aws-cognito-password"
+description = "Password generator for aws cognito userpool"
 
 [dependencies]
 rand = "0.8.5"

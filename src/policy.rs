@@ -2,9 +2,9 @@ use crate::distributions::*;
 use rand::seq::SliceRandom;
 use rand::Rng;
 
-// MEMO: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-policies.html
 const MIN_LENGTH: u8 = 6;
 
+/// [Password Policy](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-policies.html) instance
 #[derive(Debug, Copy, Clone)]
 pub struct PasswordPolicy {
     length: u8,
@@ -27,6 +27,13 @@ impl Default for PasswordPolicy {
 }
 
 impl PasswordPolicy {
+    /// Create PasswordPolicy with default values.
+    ///
+    /// - length: 8
+    /// - contains at least 1 number: true
+    /// - contains at least 1 special character: true
+    /// - contains at least 1 uppercase letter: true
+    /// - contains at least 1 lowercase letter: true
     pub fn new() -> Self {
         Self::default()
     }
@@ -72,10 +79,35 @@ impl PasswordPolicy {
         }
     }
 
+    /// Generate password from password policy. This method uses [`rand::thread_rng`] internally.
+    ///
+    /// ```
+    /// use aws_cognito_password::PasswordPolicy;
+    ///
+    /// let policy = PasswordPolicy::new()
+    ///     .set_length(10)
+    ///     .contains_at_least_1_special_character(false);
+    ///
+    /// let password = policy.gen();
+    /// println!("password: {}", password);
+    /// ```
     pub fn gen(&self) -> String {
         self.gen_with_rng(&mut rand::thread_rng())
     }
 
+    /// Generate password from password policy and given [`rand::Rng`].
+    ///
+    /// ```
+    /// use aws_cognito_password::PasswordPolicy;
+    ///
+    /// let policy = PasswordPolicy::new()
+    ///     .contains_at_least_1_number(true)
+    ///     .contains_at_least_1_lowercase_letter(false);
+    /// let mut rng = rand::thread_rng();
+    ///
+    /// let password = policy.gen_with_rng(&mut rng);
+    /// println!("password: {}", password);
+    /// ```
     pub fn gen_with_rng<R: Rng + ?Sized>(&self, rng: &mut R) -> String {
         let mut chars: Vec<char> = (0..self.length)
             .map(|_| rng.sample(AnyLetter) as char)
